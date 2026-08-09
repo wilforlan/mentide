@@ -1,18 +1,32 @@
 import { format } from "date-fns";
+import {
+  CalendarDays,
+  Crosshair,
+  GitFork,
+  History,
+  NotebookPen,
+  type LucideIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { Note, Profile } from "@shared/types";
 import { Button } from "@/components/ui/button";
 import { NoteEditor } from "@/features/editor/note-editor";
+import { FocusView } from "@/features/focus/focus-view";
+import {
+  pickContinueNote,
+  shouldBootToFocus,
+} from "@/features/focus/focus-model";
 import { GraphView } from "@/features/graph/graph-view";
 import { HistoryView } from "@/features/history/history-view";
 import { ItemHubView } from "@/features/items/item-hub-view";
+import { MindwtrMigrationBanner } from "@/features/migration/mindwtr-migration-banner";
 import { NotesList } from "@/features/notes/notes-list";
 import { OnboardingScreen } from "@/features/onboarding/onboarding-screen";
 import { ProfileSwitcher } from "@/features/profiles/profile-switcher";
 import { shouldAcceptSavedNote } from "@/features/editor/date-scroll";
 import { cn } from "@/lib/utils";
 
-type View = "today" | "notes" | "graph" | "history" | "item";
+type View = "today" | "focus" | "notes" | "graph" | "history" | "item";
 
 export const App = (): React.JSX.Element => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -40,16 +54,31 @@ export const App = (): React.JSX.Element => {
     setView("today");
   }, []);
 
+  const openInitialView = useCallback(async (profileId: string) => {
+    const [pins, recent] = await Promise.all([
+      window.mentide.pins.list(profileId),
+      window.mentide.notes.listRecent(profileId, 40),
+    ]);
+    const continueNote = pickContinueNote(recent);
+    if (shouldBootToFocus({ pinCount: pins.length, continueNote })) {
+      setActiveProfileId(profileId);
+      setActiveNote(null);
+      setView("focus");
+      return;
+    }
+    setActiveProfileId(profileId);
+    await openToday(profileId);
+  }, [openToday]);
+
   useEffect(() => {
     void (async () => {
       const active = await refreshProfiles();
       if (active.length > 0) {
-        setActiveProfileId(active[0].id);
-        await openToday(active[0].id);
+        await openInitialView(active[0].id);
       }
       setBootstrapped(true);
     })();
-  }, [openToday, refreshProfiles]);
+  }, [openInitialView, refreshProfiles]);
 
   const handleCreateProfile = async (name: string): Promise<void> => {
     const trimmed = name.trim();
@@ -65,6 +94,17 @@ export const App = (): React.JSX.Element => {
   const handleSelectProfile = async (profileId: string): Promise<void> => {
     setActiveProfileId(profileId);
     await openToday(profileId);
+  };
+
+  const handleMigrationComplete = async (): Promise<void> => {
+    const active = await refreshProfiles();
+    if (active[0]) {
+      setActiveProfileId(active[0].id);
+      await openToday(active[0].id);
+      return;
+    }
+    setActiveProfileId(null);
+    setActiveNote(null);
   };
 
   const handleOpenNote = async (noteId: string): Promise<void> => {
@@ -99,11 +139,16 @@ export const App = (): React.JSX.Element => {
     );
   }
 
-  const navItems: { id: Exclude<View, "item">; label: string }[] = [
-    { id: "today", label: "Today" },
-    { id: "notes", label: "Notes" },
-    { id: "graph", label: "Graph" },
-    { id: "history", label: "History" },
+  const navItems: {
+    id: Exclude<View, "item">;
+    label: string;
+    icon: LucideIcon;
+  }[] = [
+    { id: "today", label: "Today", icon: CalendarDays },
+    { id: "focus", label: "Focus", icon: Crosshair },
+    { id: "notes", label: "Notes", icon: NotebookPen },
+    { id: "graph", label: "Graph", icon: GitFork },
+    { id: "history", label: "History", icon: History },
   ];
 
   return (
@@ -116,25 +161,36 @@ export const App = (): React.JSX.Element => {
           {format(new Date(), "EEEE, MMM d")}
         </p>
         <nav className="mt-6 flex flex-col gap-1">
-          {navItems.map((item) => (
-            <Button
-              key={item.id}
-              variant={view === item.id ? "soft" : "ghost"}
-              className={cn("justify-start", view === item.id && "shadow-sm")}
-              onClick={() => {
-                setActiveItemTitle(null);
-                setView(item.id);
-                if (item.id === "today" && activeProfileId) {
-                  void openToday(activeProfileId);
-                }
-                if (item.id === "notes") {
-                  setActiveNote(null);
-                }
-              }}
-            >
-              {item.label}
-            </Button>
-          ))}
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Button
+                key={item.id}
+                variant={view === item.id ? "soft" : "ghost"}
+                className={cn(
+                  "justify-start gap-2.5",
+                  view === item.id && "shadow-sm"
+                )}
+                onClick={() => {
+                  setActiveItemTitle(null);
+                  setView(item.id);
+                  if (item.id === "today" && activeProfileId) {
+                    void openToday(activeProfileId);
+                  }
+                  if (item.id === "notes") {
+                    setActiveNote(null);
+                  }
+                }}
+              >
+                <Icon
+                  className="size-4 shrink-0 opacity-70"
+                  strokeWidth={1.75}
+                  aria-hidden
+                />
+                {item.label}
+              </Button>
+            );
+          })}
         </nav>
         <div className="mt-auto pt-4">
           <ProfileSwitcher
@@ -185,6 +241,16 @@ export const App = (): React.JSX.Element => {
             }}
           />
         ) : null}
+        {view === "focus" ? (
+          <FocusView
+            profileId={activeProfileId}
+            onOpenNote={(noteId) => void handleOpenNote(noteId)}
+            onOpenToday={() => {
+              void openToday(activeProfileId);
+            }}
+            onOpenItem={handleOpenItem}
+          />
+        ) : null}
         {view === "graph" ? (
           <GraphView
             profileId={activeProfileId}
@@ -228,59 +294,68 @@ export const App = (): React.JSX.Element => {
         ) : null}
         {(view === "today" || (view === "notes" && activeNote)) &&
         activeNote ? (
-          <NoteEditor
-            note={activeNote}
-            profileId={activeProfileId}
-            onChange={async ({ noteId, contentJson }) => {
-              const updated = await window.mentide.notes.updateContent(
-                noteId,
-                contentJson
-              );
-              setActiveNote((current) => {
-                if (
-                  !current ||
-                  !shouldAcceptSavedNote({
-                    activeNoteId: current.id,
-                    savedNoteId: noteId,
-                  })
-                ) {
-                  return current;
+          <div className="flex h-full min-h-0 flex-col">
+            {view === "today" ? (
+              <MindwtrMigrationBanner
+                onMigrated={() => handleMigrationComplete()}
+              />
+            ) : null}
+            <div className="min-h-0 flex-1">
+              <NoteEditor
+                note={activeNote}
+                profileId={activeProfileId}
+                onChange={async ({ noteId, contentJson }) => {
+                  const updated = await window.mentide.notes.updateContent(
+                    noteId,
+                    contentJson
+                  );
+                  setActiveNote((current) => {
+                    if (
+                      !current ||
+                      !shouldAcceptSavedNote({
+                        activeNoteId: current.id,
+                        savedNoteId: noteId,
+                      })
+                    ) {
+                      return current;
+                    }
+                    return updated;
+                  });
+                }}
+                onWikiLink={async (title) => {
+                  const result = await window.mentide.nodes.createFromWikiLink({
+                    profileId: activeProfileId,
+                    sourceNoteId: activeNote.id,
+                    title,
+                  });
+                  return result.node;
+                }}
+                onOpenItem={handleOpenItem}
+                onNavigateDate={
+                  activeNote.kind === "daily"
+                    ? (date) => {
+                        void (async () => {
+                          const note = await window.mentide.notes.getByDate(
+                            activeProfileId,
+                            date
+                          );
+                          setActiveNote(note);
+                          setView("today");
+                        })();
+                      }
+                    : undefined
                 }
-                return updated;
-              });
-            }}
-            onWikiLink={async (title) => {
-              const result = await window.mentide.nodes.createFromWikiLink({
-                profileId: activeProfileId,
-                sourceNoteId: activeNote.id,
-                title,
-              });
-              return result.node;
-            }}
-            onOpenItem={handleOpenItem}
-            onNavigateDate={
-              activeNote.kind === "daily"
-                ? (date) => {
-                    void (async () => {
-                      const note = await window.mentide.notes.getByDate(
-                        activeProfileId,
-                        date
-                      );
-                      setActiveNote(note);
-                      setView("today");
-                    })();
-                  }
-                : undefined
-            }
-            onBackToNotes={
-              activeNote.kind === "freeform"
-                ? () => {
-                    setActiveNote(null);
-                    setView("notes");
-                  }
-                : undefined
-            }
-          />
+                onBackToNotes={
+                  activeNote.kind === "freeform"
+                    ? () => {
+                        setActiveNote(null);
+                        setView("notes");
+                      }
+                    : undefined
+                }
+              />
+            </div>
+          </div>
         ) : null}
       </main>
     </div>

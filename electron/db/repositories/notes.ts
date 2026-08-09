@@ -108,6 +108,19 @@ export const createNoteRepository = (db: Database.Database) => {
     return rows.map(mapNote);
   };
 
+  const listRecent = (profileId: string, limit: number): Note[] => {
+    const rows = db
+      .prepare(
+        `SELECT id, profile_id, kind, title, date, content_json, created_at, updated_at, deleted_at
+         FROM notes
+         WHERE profile_id = ? AND deleted_at IS NULL
+         ORDER BY updated_at DESC
+         LIMIT ?`
+      )
+      .all(profileId, limit) as NoteRow[];
+    return rows.map(mapNote);
+  };
+
   const listArchived = (profileId: string): Note[] => {
     const rows = db
       .prepare(
@@ -161,6 +174,7 @@ export const createNoteRepository = (db: Database.Database) => {
     getOrCreateDaily,
     createFreeform,
     listFreeform,
+    listRecent,
     listArchived,
     updateContent,
     softDelete,

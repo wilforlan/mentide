@@ -25,16 +25,28 @@ export const ItemHubView = ({
   const [hub, setHub] = useState<ItemHub | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pinned, setPinned] = useState(false);
+  const [pinBusy, setPinBusy] = useState(false);
+  const [pinError, setPinError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setPinError(null);
     void window.mentide.nodes
       .getHub({ profileId, title, nodeId })
-      .then((result) => {
+      .then(async (result) => {
+        if (cancelled) {
+          return;
+        }
+        setHub(result);
+        const isPinned = await window.mentide.pins.isPinned({
+          profileId,
+          nodeId: result.node.id,
+        });
         if (!cancelled) {
-          setHub(result);
+          setPinned(isPinned);
         }
       })
       .catch((err: unknown) => {
@@ -52,6 +64,33 @@ export const ItemHubView = ({
       cancelled = true;
     };
   }, [profileId, title, nodeId]);
+
+  const togglePin = async (): Promise<void> => {
+    if (!hub || pinBusy) {
+      return;
+    }
+    setPinBusy(true);
+    setPinError(null);
+    try {
+      if (pinned) {
+        await window.mentide.pins.remove({
+          profileId,
+          nodeId: hub.node.id,
+        });
+        setPinned(false);
+      } else {
+        await window.mentide.pins.add({
+          profileId,
+          nodeId: hub.node.id,
+        });
+        setPinned(true);
+      }
+    } catch (err: unknown) {
+      setPinError(err instanceof Error ? err.message : "Could not update pin");
+    } finally {
+      setPinBusy(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -86,6 +125,14 @@ export const ItemHubView = ({
             {hub.node.title}
           </h2>
         </div>
+        <Button
+          size="sm"
+          variant={pinned ? "soft" : "outline"}
+          disabled={pinBusy}
+          onClick={() => void togglePin()}
+        >
+          {pinned ? "Unpin priority" : "Pin as priority"}
+        </Button>
         {hub.node.noteId ? (
           <Button
             size="sm"
@@ -104,6 +151,11 @@ export const ItemHubView = ({
           </Button>
         )}
       </header>
+      {pinError ? (
+        <p className="border-b border-sand-300/40 px-6 py-2 text-sm text-amber-700">
+          {pinError}
+        </p>
+      ) : null}
 
       <div className="grid gap-8 p-6 lg:grid-cols-[minmax(0,1fr)_260px]">
         <section>

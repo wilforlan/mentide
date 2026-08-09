@@ -1,11 +1,16 @@
 import type { IpcMain } from "electron";
 import { format } from "date-fns";
-import { getDb } from "../db/database";
+import {
+  getDb,
+  getMindwtrMigrationAvailability,
+  runMindwtrMigrationFromUi,
+} from "../db/database";
 import { createGraphRepository } from "../db/repositories/graph";
 import { createHistoryRepository } from "../db/repositories/history";
 import { createItemRepository } from "../db/repositories/items";
 import { createNodeRepository } from "../db/repositories/nodes";
 import { createNoteRepository } from "../db/repositories/notes";
+import { createPinRepository } from "../db/repositories/pins";
 import { createProfileRepository } from "../db/repositories/profiles";
 
 const todayDate = (): string => format(new Date(), "yyyy-MM-dd");
@@ -48,6 +53,13 @@ export const registerIpcHandlers = (ipcMain: IpcMain): void => {
   ipcMain.handle("notes:listFreeform", (_event, profileId: string) => {
     return createNoteRepository(getDb()).listFreeform(profileId);
   });
+
+  ipcMain.handle(
+    "notes:listRecent",
+    (_event, profileId: string, limit?: number) => {
+      return createNoteRepository(getDb()).listRecent(profileId, limit ?? 20);
+    }
+  );
 
   ipcMain.handle("notes:getById", (_event, id: string) => {
     return createNoteRepository(getDb()).getById(id);
@@ -131,5 +143,38 @@ export const registerIpcHandlers = (ipcMain: IpcMain): void => {
 
   ipcMain.handle("history:restoreVersion", (_event, versionId: string) => {
     return createHistoryRepository(getDb()).restoreVersion(versionId);
+  });
+
+  ipcMain.handle("pins:list", (_event, profileId: string) => {
+    return createPinRepository(getDb()).list(profileId);
+  });
+
+  ipcMain.handle(
+    "pins:add",
+    (_event, options: { profileId: string; nodeId: string }) => {
+      return createPinRepository(getDb()).add(options);
+    }
+  );
+
+  ipcMain.handle(
+    "pins:remove",
+    (_event, options: { profileId: string; nodeId: string }) => {
+      createPinRepository(getDb()).remove(options);
+    }
+  );
+
+  ipcMain.handle(
+    "pins:isPinned",
+    (_event, options: { profileId: string; nodeId: string }) => {
+      return createPinRepository(getDb()).isPinned(options);
+    }
+  );
+
+  ipcMain.handle("migration:getStatus", () => {
+    return getMindwtrMigrationAvailability();
+  });
+
+  ipcMain.handle("migration:run", () => {
+    return runMindwtrMigrationFromUi();
   });
 };

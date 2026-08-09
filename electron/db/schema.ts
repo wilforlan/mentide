@@ -50,4 +50,15 @@ CREATE TABLE IF NOT EXISTS note_versions (
   content_json TEXT NOT NULL,
   created_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS pins (
+  id TEXT PRIMARY KEY NOT NULL,
+  profile_id TEXT NOT NULL REFERENCES profiles(id),
+  node_id TEXT NOT NULL REFERENCES nodes(id),
+  rank INTEGER NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS pins_profile_node_unique
+  ON pins(profile_id, node_id);
 `;

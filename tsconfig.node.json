@@ -29,6 +29,8 @@
     "src/features/onboarding/onboarding-steps.ts",
     "src/features/editor/date-scroll.ts",
     "src/features/graph/build-flow-graph.ts",
+    "src/features/focus/focus-model.ts",
+    "src/features/notes/note-preview.ts",
     "electron.vite.config.ts",
     "vitest.config.ts",
     "tests/**/*"

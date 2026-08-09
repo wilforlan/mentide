@@ -57,6 +57,31 @@ export const NoteVersionSchema = z.object({
 
 export type NoteVersion = z.infer<typeof NoteVersionSchema>;
 
+export const PinSchema = z.object({
+  id: z.string().uuid(),
+  profileId: z.string().uuid(),
+  nodeId: z.string().uuid(),
+  rank: z.number().int().nonnegative(),
+  createdAt: z.string(),
+});
+
+export type Pin = z.infer<typeof PinSchema>;
+
+export type PinWithNode = Pin & { node: GraphNode };
+
+export type MindwtrMigrationStatus = {
+  available: boolean;
+  sourcePresent: boolean;
+  sourceHasContent: boolean;
+  targetHasMeaningfulContent: boolean;
+  alreadyMigrated: boolean;
+};
+
+export type MindwtrMigrationResult = {
+  migrated: boolean;
+  reason?: string;
+};
+
 export const emptyDocJson = JSON.stringify({
   type: "doc",
   content: [{ type: "paragraph" }],
@@ -99,6 +124,7 @@ export type MentideApi = {
     getToday: (profileId: string) => Promise<Note>;
     getByDate: (profileId: string, date: string) => Promise<Note>;
     listFreeform: (profileId: string) => Promise<Note[]>;
+    listRecent: (profileId: string, limit?: number) => Promise<Note[]>;
     getById: (id: string) => Promise<Note | null>;
     createFreeform: (profileId: string, title: string) => Promise<Note>;
     updateContent: (id: string, contentJson: string) => Promise<Note>;
@@ -132,5 +158,24 @@ export type MentideApi = {
     listVersions: (noteId: string) => Promise<NoteVersion[]>;
     saveVersion: (noteId: string) => Promise<NoteVersion>;
     restoreVersion: (versionId: string) => Promise<Note>;
+  };
+  pins: {
+    list: (profileId: string) => Promise<PinWithNode[]>;
+    add: (options: {
+      profileId: string;
+      nodeId: string;
+    }) => Promise<Pin>;
+    remove: (options: {
+      profileId: string;
+      nodeId: string;
+    }) => Promise<void>;
+    isPinned: (options: {
+      profileId: string;
+      nodeId: string;
+    }) => Promise<boolean>;
+  };
+  migration: {
+    getStatus: () => Promise<MindwtrMigrationStatus>;
+    run: () => Promise<MindwtrMigrationResult>;
   };
 };
