@@ -87,7 +87,7 @@ export type ItemHub = {
   related: RelatedItem[];
 };
 
-export type MindwtrApi = {
+export type MentideApi = {
   profiles: {
     list: () => Promise<Profile[]>;
     listArchived: () => Promise<Profile[]>;

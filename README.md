@@ -1,4 +1,4 @@
-# mindwtr
+# Mentide
 
 Local Electron note app for journaling and thinking.
 
@@ -14,7 +14,7 @@ On the daily note canvas, overscroll at the edges moves through time: scroll up 
 
 ## Why it was built
 
-Most note tools push accounts, sync, and distraction. mindwtr was built for the opposite: a private, glossy light UI for sitting with thoughts, linking them over time, and understanding the shape of what you care about — with no login and no network required.
+Most note tools push accounts, sync, and distraction. Mentide was built for the opposite: a private, glossy light UI for sitting with thoughts, linking them over time, and understanding the shape of what you care about — with no login and no network required.
 
 ## Stack
 
@@ -46,6 +46,6 @@ npm run dev
 npm run dist:dmg
 ```
 
-The signed-unsigned DMG lands in `release/` (for example `mindwtr-0.1.0-arm64.dmg`). Open it and drag **mindwtr** into Applications.
+The signed-unsigned DMG lands in `release/` (for example `Mentide-0.2.0-arm64.dmg`). Open it and drag **Mentide** into Applications.
 
 App icon assets live in `build/icon.icns` and `build/icon.png`.

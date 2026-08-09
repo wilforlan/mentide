@@ -25,7 +25,7 @@ export const HistoryView = ({
   );
 
   useEffect(() => {
-    void window.mindwtr.notes.listArchived(profileId).then(setArchivedNotes);
+    void window.mentide.notes.listArchived(profileId).then(setArchivedNotes);
   }, [profileId]);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export const HistoryView = ({
       setVersions([]);
       return;
     }
-    void window.mindwtr.history.listVersions(activeNote.id).then(setVersions);
+    void window.mentide.history.listVersions(activeNote.id).then(setVersions);
   }, [activeNote]);
 
   return (
@@ -80,9 +80,9 @@ export const HistoryView = ({
               size="sm"
               variant="soft"
               onClick={async () => {
-                await window.mindwtr.history.saveVersion(activeNote.id);
+                await window.mentide.history.saveVersion(activeNote.id);
                 setVersions(
-                  await window.mindwtr.history.listVersions(activeNote.id)
+                  await window.mentide.history.listVersions(activeNote.id)
                 );
               }}
             >
@@ -103,10 +103,10 @@ export const HistoryView = ({
                     size="sm"
                     onClick={async () => {
                       const restored =
-                        await window.mindwtr.history.restoreVersion(version.id);
+                        await window.mentide.history.restoreVersion(version.id);
                       onRestored(restored);
                       setVersions(
-                        await window.mindwtr.history.listVersions(restored.id)
+                        await window.mentide.history.listVersions(restored.id)
                       );
                     }}
                   >
@@ -144,9 +144,9 @@ export const HistoryView = ({
                   size="sm"
                   variant="outline"
                   onClick={async () => {
-                    await window.mindwtr.notes.restore(note.id);
+                    await window.mentide.notes.restore(note.id);
                     setArchivedNotes(
-                      await window.mindwtr.notes.listArchived(profileId)
+                      await window.mentide.notes.listArchived(profileId)
                     );
                   }}
                 >

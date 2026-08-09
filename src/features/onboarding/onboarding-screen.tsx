@@ -83,7 +83,7 @@ export const OnboardingScreen = ({
       <section className="relative flex min-h-0 flex-col justify-between px-8 py-10 sm:px-12 lg:px-16">
         <div>
           <p className="onboarding-brand font-[family-name:var(--font-display)] text-3xl tracking-tight text-ink-900">
-            mindwtr
+            Mentide
           </p>
           <p className="mt-2 max-w-sm text-sm text-ink-700/70">
             A calm place to journal and think — only on this device.
@@ -187,7 +187,7 @@ export const OnboardingScreen = ({
                     }
                   />
                   <span className="text-sm leading-relaxed text-ink-700">
-                    I understand mindwtr keeps my notes offline on this computer
+                    I understand Mentide keeps my notes offline on this computer
                     only — nothing is uploaded, synced, or tied to an account.
                   </span>
                 </label>
@@ -213,7 +213,7 @@ export const OnboardingScreen = ({
             {isLastOnboardingStep(stepIndex)
               ? submitting
                 ? "Creating…"
-                : "Enter mindwtr"
+                : "Enter Mentide"
               : "Continue"}
           </Button>
         </div>
@@ -235,7 +235,7 @@ export const OnboardingScreen = ({
             Think clearly.
           </p>
           <p className="mt-6 max-w-md text-base leading-relaxed text-sand-50/85 xl:text-lg">
-            mindwtr exists for the moments between noise — morning pages, linked
+            Mentide exists for the moments between noise — morning pages, linked
             ideas, and a graph of what you’re becoming. Your data never leaves
             this machine.
           </p>

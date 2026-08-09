@@ -30,7 +30,7 @@ export const ItemHubView = ({
     let cancelled = false;
     setLoading(true);
     setError(null);
-    void window.mindwtr.nodes
+    void window.mentide.nodes
       .getHub({ profileId, title, nodeId })
       .then((result) => {
         if (!cancelled) {

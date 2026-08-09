@@ -32,7 +32,7 @@ export const GraphView = ({
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
-    void window.mindwtr.graph.get(profileId).then(setData);
+    void window.mentide.graph.get(profileId).then(setData);
   }, [profileId]);
 
   const flowGraph = useMemo(() => buildFlowGraph({ data }), [data]);

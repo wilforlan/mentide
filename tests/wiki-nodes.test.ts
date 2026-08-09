@@ -16,7 +16,7 @@ describe("Wiki-link nodes", () => {
   let sourceNoteId: string;
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), "mindwtr-"));
+    dir = mkdtempSync(join(tmpdir(), "mentide-"));
     db = openDatabase(join(dir, "test.sqlite"));
     profileId = createProfileRepository(db).create("Linker").id;
     sourceNoteId = createNoteRepository(db).getOrCreateDaily(

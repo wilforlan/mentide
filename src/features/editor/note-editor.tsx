@@ -107,7 +107,7 @@ export const NoteEditor = ({
     editorProps: {
       attributes: {
         class:
-          "mindwtr-editor prose prose-stone max-w-none min-h-[70vh] focus:outline-none px-10 py-8 text-ink-900",
+          "mentide-editor prose prose-stone max-w-none min-h-[70vh] focus:outline-none px-10 py-8 text-ink-900",
       },
       handleClick: (_view, _pos, event) => {
         const target = event.target;
@@ -151,7 +151,7 @@ export const NoteEditor = ({
         clearTimeout(versionTimer.current);
       }
       versionTimer.current = setTimeout(() => {
-        void window.mindwtr.history.saveVersion(noteIdRef.current);
+        void window.mentide.history.saveVersion(noteIdRef.current);
       }, 30000);
     },
   });
@@ -404,14 +404,14 @@ export const NoteEditor = ({
         />
       </div>
       <style>{`
-        .mindwtr-editor h1 { font-family: var(--font-display); font-size: 2.25rem; margin: 1.2rem 0 0.6rem; }
-        .mindwtr-editor h2 { font-family: var(--font-display); font-size: 1.75rem; margin: 1rem 0 0.5rem; }
-        .mindwtr-editor h3 { font-family: var(--font-display); font-size: 1.35rem; margin: 0.9rem 0 0.4rem; }
-        .mindwtr-editor .subheading { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: #5c4338; margin: 0.7rem 0 0.35rem; }
-        .mindwtr-editor p { line-height: 1.7; margin: 0.4rem 0; }
-        .mindwtr-editor ul { list-style: disc; padding-left: 1.4rem; }
-        .mindwtr-editor ol { list-style: decimal; padding-left: 1.4rem; }
-        .mindwtr-editor a.wiki-link {
+        .mentide-editor h1 { font-family: var(--font-display); font-size: 2.25rem; margin: 1.2rem 0 0.6rem; }
+        .mentide-editor h2 { font-family: var(--font-display); font-size: 1.75rem; margin: 1rem 0 0.5rem; }
+        .mentide-editor h3 { font-family: var(--font-display); font-size: 1.35rem; margin: 0.9rem 0 0.4rem; }
+        .mentide-editor .subheading { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: #5c4338; margin: 0.7rem 0 0.35rem; }
+        .mentide-editor p { line-height: 1.7; margin: 0.4rem 0; }
+        .mentide-editor ul { list-style: disc; padding-left: 1.4rem; }
+        .mentide-editor ol { list-style: decimal; padding-left: 1.4rem; }
+        .mentide-editor a.wiki-link {
           color: #c97b3a;
           font-weight: 600;
           text-decoration: underline;
@@ -419,10 +419,10 @@ export const NoteEditor = ({
           text-underline-offset: 3px;
           cursor: pointer;
         }
-        .mindwtr-editor a.wiki-link:hover {
+        .mentide-editor a.wiki-link:hover {
           color: #a8652e;
         }
-        .mindwtr-editor p.is-editor-empty:first-child::before {
+        .mentide-editor p.is-editor-empty:first-child::before {
           color: rgb(61 47 40 / 0.35);
           content: attr(data-placeholder);
           float: left;

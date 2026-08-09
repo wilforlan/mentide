@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
-import type { MindwtrApi } from "../shared/types";
+import type { MentideApi } from "../shared/types";
 
-const api: MindwtrApi = {
+const api: MentideApi = {
   profiles: {
     list: () => ipcRenderer.invoke("profiles:list"),
     listArchived: () => ipcRenderer.invoke("profiles:listArchived"),
@@ -44,4 +44,4 @@ const api: MindwtrApi = {
   },
 };
 
-contextBridge.exposeInMainWorld("mindwtr", api);
+contextBridge.exposeInMainWorld("mentide", api);
