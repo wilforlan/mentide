@@ -39,6 +39,7 @@ npm run dev
 - `npm run typecheck` — TypeScript
 - `npm run build` — production build
 - `npm run dist:dmg` — build a macOS `.dmg` installer into `release/`
+- `npm run dist:dmg:all` — build arm64 and x64 DMGs
 
 ## macOS installer
 
@@ -46,6 +47,10 @@ npm run dev
 npm run dist:dmg
 ```
 
-The signed-unsigned DMG lands in `release/` (for example `Mentide-0.2.0-arm64.dmg`). Open it and drag **Mentide** into Applications.
+The unsigned DMG lands in `release/` (for example `Mentide-0.2.0-arm64.dmg`). Open it and drag **Mentide** into Applications.
 
 App icon assets live in `build/icon.icns` and `build/icon.png`.
+
+## CI releases
+
+Pushes to `main` run [`.github/workflows/release.yml`](.github/workflows/release.yml): tests, typecheck, then unsigned macOS DMGs for **arm64** and **x64**. Each run publishes a GitHub Release tagged `v{version}-{shortSha}` with both installers attached. You can also trigger the workflow manually from the Actions tab.

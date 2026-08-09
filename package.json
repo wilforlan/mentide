@@ -18,7 +18,8 @@
     "test:watch": "vitest",
     "dist:dmg": "npm run build && electron-builder --mac dmg",
     "dist:dmg:arm64": "npm run build && electron-builder --mac dmg --arm64",
-    "dist:dmg:x64": "npm run build && electron-builder --mac dmg --x64"
+    "dist:dmg:x64": "npm run build && electron-builder --mac dmg --x64",
+    "dist:dmg:all": "npm run build && electron-builder --mac dmg --arm64 --x64"
   },
   "build": {
     "appId": "computer.mentide.app",
