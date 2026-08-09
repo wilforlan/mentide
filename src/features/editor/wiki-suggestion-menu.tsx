@@ -67,7 +67,7 @@ export const WikiSuggestionMenu = ({
       const coords = view.coordsAtPos(from);
       const currentRequest = ++requestId;
 
-      void window.mindwtr.nodes
+      void window.mentide.nodes
         .search({ profileId, query: open.query, limit: 8 })
         .then((results) => {
           if (cancelled || currentRequest !== requestId) {

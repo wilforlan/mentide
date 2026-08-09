@@ -15,7 +15,7 @@ describe("Node search", () => {
   let noteId: string;
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), "mindwtr-"));
+    dir = mkdtempSync(join(tmpdir(), "mentide-"));
     db = openDatabase(join(dir, "test.sqlite"));
     profileId = createProfileRepository(db).create("Searcher").id;
     noteId = createNoteRepository(db).getOrCreateDaily(

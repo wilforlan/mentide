@@ -20,7 +20,7 @@ const createWindow = (): void => {
     height: 840,
     minWidth: 900,
     minHeight: 600,
-    title: "mindwtr",
+    title: "Mentide",
     backgroundColor: "#F7EFE6",
     ...(iconPath ? { icon: iconPath } : {}),
     webPreferences: {

@@ -1,8 +1,8 @@
-import type { MindwtrApi } from "@shared/types";
+import type { MentideApi } from "@shared/types";
 
 declare global {
   interface Window {
-    mindwtr: MindwtrApi;
+    mentide: MentideApi;
   }
 }
 

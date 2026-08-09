@@ -48,7 +48,7 @@ export const NotesList = ({
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    void window.mindwtr.notes.listFreeform(profileId).then(setNotes);
+    void window.mentide.notes.listFreeform(profileId).then(setNotes);
   }, [profileId]);
 
   const createNote = async (): Promise<void> => {
@@ -59,7 +59,7 @@ export const NotesList = ({
     await onCreate(nextTitle);
     setTitle("");
     setCreating(false);
-    setNotes(await window.mindwtr.notes.listFreeform(profileId));
+    setNotes(await window.mentide.notes.listFreeform(profileId));
   };
 
   return (

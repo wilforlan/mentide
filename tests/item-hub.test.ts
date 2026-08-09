@@ -15,7 +15,7 @@ describe("Item hub", () => {
   let profileId: string;
 
   beforeEach(() => {
-    dir = mkdtempSync(join(tmpdir(), "mindwtr-"));
+    dir = mkdtempSync(join(tmpdir(), "mentide-"));
     db = openDatabase(join(dir, "test.sqlite"));
     profileId = createProfileRepository(db).create("Reader").id;
   });

@@ -26,8 +26,8 @@ export const App = (): React.JSX.Element => {
 
   const refreshProfiles = useCallback(async () => {
     const [active, archived] = await Promise.all([
-      window.mindwtr.profiles.list(),
-      window.mindwtr.profiles.listArchived(),
+      window.mentide.profiles.list(),
+      window.mentide.profiles.listArchived(),
     ]);
     setProfiles(active);
     setArchivedProfiles(archived);
@@ -35,7 +35,7 @@ export const App = (): React.JSX.Element => {
   }, []);
 
   const openToday = useCallback(async (profileId: string) => {
-    const note = await window.mindwtr.notes.getToday(profileId);
+    const note = await window.mentide.notes.getToday(profileId);
     setActiveNote(note);
     setView("today");
   }, []);
@@ -56,7 +56,7 @@ export const App = (): React.JSX.Element => {
     if (!trimmed) {
       return;
     }
-    const profile = await window.mindwtr.profiles.create(trimmed);
+    const profile = await window.mentide.profiles.create(trimmed);
     await refreshProfiles();
     setActiveProfileId(profile.id);
     await openToday(profile.id);
@@ -68,7 +68,7 @@ export const App = (): React.JSX.Element => {
   };
 
   const handleOpenNote = async (noteId: string): Promise<void> => {
-    const note = await window.mindwtr.notes.getById(noteId);
+    const note = await window.mentide.notes.getById(noteId);
     if (!note) {
       return;
     }
@@ -86,7 +86,7 @@ export const App = (): React.JSX.Element => {
   if (!bootstrapped) {
     return (
       <div className="flex h-full items-center justify-center font-[family-name:var(--font-display)] text-2xl text-ink-700">
-        mindwtr
+        Mentide
       </div>
     );
   }
@@ -110,7 +110,7 @@ export const App = (): React.JSX.Element => {
     <div className="flex h-full gap-3 p-3">
       <aside className="glass-panel flex w-60 shrink-0 flex-col rounded-3xl p-4">
         <div className="font-[family-name:var(--font-display)] text-2xl text-ink-900">
-          mindwtr
+          Mentide
         </div>
         <p className="mt-1 text-xs text-ink-700/60">
           {format(new Date(), "EEEE, MMM d")}
@@ -146,7 +146,7 @@ export const App = (): React.JSX.Element => {
               void handleCreateProfile(name);
             }}
             onArchive={async (id) => {
-              await window.mindwtr.profiles.softDelete(id);
+              await window.mentide.profiles.softDelete(id);
               const active = await refreshProfiles();
               if (activeProfileId === id) {
                 if (active[0]) {
@@ -159,7 +159,7 @@ export const App = (): React.JSX.Element => {
               }
             }}
             onRestore={async (id) => {
-              await window.mindwtr.profiles.restore(id);
+              await window.mentide.profiles.restore(id);
               await refreshProfiles();
             }}
           />
@@ -178,7 +178,7 @@ export const App = (): React.JSX.Element => {
             onOpenNote={(noteId) => void handleOpenNote(noteId)}
             onOpenItem={handleOpenItem}
             onPromote={async (nodeId) => {
-              const result = await window.mindwtr.nodes.promote(nodeId);
+              const result = await window.mentide.nodes.promote(nodeId);
               setActiveNote(result.note);
               setActiveItemTitle(null);
               setView("notes");
@@ -191,7 +191,7 @@ export const App = (): React.JSX.Element => {
             onOpenNote={(noteId) => void handleOpenNote(noteId)}
             onOpenItem={handleOpenItem}
             onPromoteNode={async (nodeId) => {
-              const result = await window.mindwtr.nodes.promote(nodeId);
+              const result = await window.mentide.nodes.promote(nodeId);
               setActiveNote(result.note);
               setView("notes");
             }}
@@ -202,7 +202,7 @@ export const App = (): React.JSX.Element => {
             profileId={activeProfileId}
             activeNote={activeNote}
             onOpenDate={async (date) => {
-              const note = await window.mindwtr.notes.getByDate(
+              const note = await window.mentide.notes.getByDate(
                 activeProfileId,
                 date
               );
@@ -218,7 +218,7 @@ export const App = (): React.JSX.Element => {
             profileId={activeProfileId}
             onOpenNote={(noteId) => void handleOpenNote(noteId)}
             onCreate={async (title) => {
-              const note = await window.mindwtr.notes.createFreeform(
+              const note = await window.mentide.notes.createFreeform(
                 activeProfileId,
                 title
               );
@@ -232,7 +232,7 @@ export const App = (): React.JSX.Element => {
             note={activeNote}
             profileId={activeProfileId}
             onChange={async ({ noteId, contentJson }) => {
-              const updated = await window.mindwtr.notes.updateContent(
+              const updated = await window.mentide.notes.updateContent(
                 noteId,
                 contentJson
               );
@@ -250,7 +250,7 @@ export const App = (): React.JSX.Element => {
               });
             }}
             onWikiLink={async (title) => {
-              const result = await window.mindwtr.nodes.createFromWikiLink({
+              const result = await window.mentide.nodes.createFromWikiLink({
                 profileId: activeProfileId,
                 sourceNoteId: activeNote.id,
                 title,
@@ -262,7 +262,7 @@ export const App = (): React.JSX.Element => {
               activeNote.kind === "daily"
                 ? (date) => {
                     void (async () => {
-                      const note = await window.mindwtr.notes.getByDate(
+                      const note = await window.mentide.notes.getByDate(
                         activeProfileId,
                         date
                       );

@@ -18,6 +18,7 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
+      "@/*": ["src/*"],
       "@shared/*": ["shared/*"],
       "@electron/*": ["electron/*"]
     }
@@ -26,6 +27,8 @@
     "electron/**/*",
     "shared/**/*",
     "src/features/onboarding/onboarding-steps.ts",
+    "src/features/editor/date-scroll.ts",
+    "src/features/graph/build-flow-graph.ts",
     "electron.vite.config.ts",
     "vitest.config.ts",
     "tests/**/*"

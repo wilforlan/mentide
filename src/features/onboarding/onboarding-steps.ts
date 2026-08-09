@@ -29,7 +29,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
     id: "offline",
     title: "Your words stay here",
     description:
-      "mindwtr saves everything offline in SQLite on this machine. No accounts. No cloud.",
+      "Mentide saves everything offline in SQLite on this machine. No accounts. No cloud.",
   },
 ];
 

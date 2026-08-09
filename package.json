@@ -1,9 +1,9 @@
 {
-  "name": "mindwtr",
-  "version": "0.1.1",
+  "name": "mentide",
+  "version": "0.2.0",
   "private": true,
-  "description": "mindwtr — local note app for journaling and thinking",
-  "author": "mindwtr",
+  "description": "Mentide — local note app for journaling and thinking",
+  "author": "Mentide",
   "main": "./out/main/main.js",
   "scripts": {
     "ensure:native": "node scripts/ensure-electron-native.mjs",
@@ -18,12 +18,13 @@
     "test:watch": "vitest",
     "dist:dmg": "npm run build && electron-builder --mac dmg",
     "dist:dmg:arm64": "npm run build && electron-builder --mac dmg --arm64",
-    "dist:dmg:x64": "npm run build && electron-builder --mac dmg --x64"
+    "dist:dmg:x64": "npm run build && electron-builder --mac dmg --x64",
+    "dist:dmg:all": "npm run build && electron-builder --mac dmg --arm64 --x64"
   },
   "build": {
-    "appId": "computer.mindwtr.app",
-    "productName": "mindwtr",
-    "copyright": "Copyright © mindwtr",
+    "appId": "computer.mentide.app",
+    "productName": "Mentide",
+    "copyright": "Copyright © Mentide",
     "directories": {
       "output": "release",
       "buildResources": "build"
@@ -55,7 +56,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "mindwtr ${version}",
+      "title": "Mentide ${version}",
       "icon": "build/icon.icns",
       "backgroundColor": "#F7EFE6",
       "contents": [
