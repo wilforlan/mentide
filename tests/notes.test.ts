@@ -45,6 +45,37 @@ describe("Note repository", () => {
     expect(notes.listFreeform(profileId)).toEqual([note]);
   });
 
+  it("lists recent daily and freeform notes by updated_at", () => {
+    const notes = createNoteRepository(db);
+    const daily = notes.getOrCreateDaily(profileId, "2026-07-30");
+    const freeform = notes.createFreeform(profileId, "Later idea");
+    const updatedFreeform = notes.updateContent(
+      freeform.id,
+      JSON.stringify({
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "fresh" }],
+          },
+        ],
+      })
+    );
+
+    const recent = notes.listRecent(profileId, 10);
+    expect(recent.map((note) => note.id)).toEqual(
+      expect.arrayContaining([daily.id, freeform.id])
+    );
+    expect(recent).toHaveLength(2);
+    expect(
+      recent.every(
+        (note, index) =>
+          index === 0 || note.updatedAt <= recent[index - 1]!.updatedAt
+      )
+    ).toBe(true);
+    expect(updatedFreeform.updatedAt >= daily.updatedAt).toBe(true);
+  });
+
   it("persists content updates across reads", () => {
     const notes = createNoteRepository(db);
     const note = notes.getOrCreateDaily(profileId, "2026-07-30");

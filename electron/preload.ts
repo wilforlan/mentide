@@ -15,6 +15,8 @@ const api: MentideApi = {
       ipcRenderer.invoke("notes:getByDate", profileId, date),
     listFreeform: (profileId) =>
       ipcRenderer.invoke("notes:listFreeform", profileId),
+    listRecent: (profileId, limit) =>
+      ipcRenderer.invoke("notes:listRecent", profileId, limit),
     getById: (id) => ipcRenderer.invoke("notes:getById", id),
     createFreeform: (profileId, title) =>
       ipcRenderer.invoke("notes:createFreeform", profileId, title),
@@ -41,6 +43,16 @@ const api: MentideApi = {
     saveVersion: (noteId) => ipcRenderer.invoke("history:saveVersion", noteId),
     restoreVersion: (versionId) =>
       ipcRenderer.invoke("history:restoreVersion", versionId),
+  },
+  pins: {
+    list: (profileId) => ipcRenderer.invoke("pins:list", profileId),
+    add: (options) => ipcRenderer.invoke("pins:add", options),
+    remove: (options) => ipcRenderer.invoke("pins:remove", options),
+    isPinned: (options) => ipcRenderer.invoke("pins:isPinned", options),
+  },
+  migration: {
+    getStatus: () => ipcRenderer.invoke("migration:getStatus"),
+    run: () => ipcRenderer.invoke("migration:run"),
   },
 };
 
