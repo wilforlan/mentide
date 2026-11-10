@@ -10,3 +10,4 @@ coverage
 *.db-journal
 .fluent/drafts
 build/icon.iconset
+.publish_keys
